@@ -5,8 +5,35 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "jupyter>=1.1.1",
+    "matplotlib>=3.10.3",
+    "mypy>=1.17.0",
     "pandas>=2.3.1",
     "plotly>=6.2.0",
     "poethepoet>=0.36.0",
+    "ruff>=0.12.4",
+    "scipy>=1.16.0",
     "streamlit>=1.47.0",
 ]
+
+[tool.mypy]
+ignore_missing_imports = true
+disallow_untyped_defs = true
+exclude = "notebooks"
+
+[tool.poe.tasks]
+[tool.poe.tasks.lint]
+help = "Lint"
+sequence = [
+    { cmd = "uv run ruff format . --exclude notebooks" },
+    { cmd = "uv run ruff check . --exclude notebooks --fix" },
+    { cmd = "uv run mypy ." },
+]
+
+[tool.poe.tasks.run]
+help = "Run app"
+cmd = "uv run streamlit run main.py"
+
+[tool.poe.tasks.jupy]
+help = "Run jupyter lab"
+cmd = "uv run python -m jupyterlab --notebook-dir='notebooks'"
